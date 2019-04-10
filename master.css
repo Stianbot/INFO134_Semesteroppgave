@@ -1,7 +1,38 @@
+body{
+
+    background-color: black;
+    color: #fff509;
+    font-size: 15px;
+}
 .hidden{
-    visibility: hidden;
+    display: none;
 }
 
 .visible{
-    visibility: visible;
+    display: block;
+}
+button {
+    font-size: 15px;
+    background-color: black;
+    color: #fff509;
+    border-color: #fff509;
+}
+#navigasjon{
+    padding-bottom: 2%;
+}
+
+
+ul {
+    padding: 0px;
+    list-style: none;
+}
+
+li:nth-child(odd){
+    background-color: #fff509;
+    color:black;
+}
+
+li{
+
+    padding: 0.5%;
 }
