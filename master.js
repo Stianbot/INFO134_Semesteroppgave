@@ -16,8 +16,9 @@ function alterDiv(number) {
     }
 }
 
-function Search(url){
+function Search(url, description){
     this.url = url;
+    this.description = description;
     this.getNames = function(){if(this.data){return getNames(this.data)}};
     this.getIDs = function(){if(this.data){return getIDs(this.data)}};
     this.getInfo = function(id){if(this.data){return getInfo(this.data, id)}};
@@ -62,10 +63,9 @@ function getInfo(data, id){
     let search_key = id.match(regex);
     if (search_key !== null){
         for (let value in data["elementer"]){
-            let value_1 = search_key[0];
-            let value_2 = data["elementer"][value];
-            if (value_1 === value_2["kommunenummer"] ){
-                return value_2
+            if (search_key[0] === data["elementer"][value]["kommunenummer"] ){
+                data["elementer"][value].name = value;
+                return data["elementer"][value]
             }
         }
     }
@@ -75,9 +75,9 @@ function getInfo(data, id){
 }
 
 
-let population = new Search(befolkning);
-let employed = new Search(sysselsatte);
-let education = new Search(utdanning);
+let population = new Search(befolkning, "population");
+let employed = new Search(sysselsatte, "employed");
+let education = new Search(utdanning, "education");
 
 function run() {
     population.load();
