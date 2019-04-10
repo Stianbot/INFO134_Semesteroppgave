@@ -31,3 +31,12 @@ function load(url){
     xhr.send()
 }
 
+load("http://wildboy.uib.no/~tpe056/folk/104857.json");
+
+function getNames(data){
+    let array = [];
+    for (let municipality in data.elementer){
+        array.push(municipality)
+    }
+    return array
+}
