@@ -9,13 +9,17 @@
 <body onload="alterDiv()">
 <div id="navigasjon">
     <button onclick="alterDiv(0)">Introduksjon</button>
-    <button onclick="alterDiv(1)">Oversikt</button>
+    <button onclick="alterDiv(1); overview()">Oversikt</button>
     <button onclick="alterDiv(2)">Detaljer</button>
     <button onclick="alterDiv(3)">Sammenligning</button>
 </div>
 
-<div id="intro"></div>
-<div id="overview">Oversikt</div>
+<div id="intro">
+    Denne siden er et verktøy som lar deg hente statistikk over kommuner i Norge.
+</div>
+<div id="overview">
+    <ul id="overview_list"></ul>
+</div>
 <div id="details">Detaljer</div>
 <div id="compare">Sammenligning</div>
 </body>
