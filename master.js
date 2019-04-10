@@ -11,3 +11,12 @@ function alterDiv(number) {
         array[number].className = "visible"
     }
 }
+
+function Population(url){
+    this.url = url;
+    this.getNames = getNames;
+    this.getIDs = getIDs;
+    this.load = load;
+    this.onload = null;
+}
+
