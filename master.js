@@ -111,9 +111,10 @@ function get_some_details(data){
     let input = regex_check(document.getElementById("input").value);
     if (input !== null){
         let result = data.getInfo(input);
+        let population = result["Kvinner"]["2018"]+result["Menn"]["2018"];
+        let text  = result.name+" "+result.kommunenummer+" "+ population;
         console.log(result);
-
-        document.getElementById("details_data").appendChild(document.createTextNode(result.name + " " + result.kommunenummer + " "));
+        document.getElementById("details_data").appendChild(document.createTextNode(text));
     }
     if (input === null){
         throw "Feil: Skriv inn et gyldig kommunenummer"
@@ -136,12 +137,12 @@ function program() {
 
     document.getElementById("overview_button").addEventListener("click",function () {
         overview(population)
-    } );
+    });
 
     document.getElementById("details_button").addEventListener("click", function () {
 
         details(population)
-    })
+    });
 }
 
 
