@@ -1,3 +1,7 @@
+let befolkning = "http://wildboy.uib.no/~tpe056/folk/104857.json";
+let sysselsatte = "http://wildboy.uib.no/~tpe056/folk/100145.json";
+let utdanning = "http://wildboy.uib.no/~tpe056/folk/85432.json";
+
 function get(id) {
     return document.getElementById(id)
 }
@@ -12,32 +16,30 @@ function alterDiv(number) {
     }
 }
 
-function Population(url){
+function Search(url){
     this.url = url;
     this.getNames = function(){if(this.data){return getNames(this.data)}};
     this.getIDs = function(){if(this.data){return getIDs(this.data)}};
+    this.getInfo = function(id){if(this.data){return getInfo(this.data, id)}};
     this.load = function(){load(this.url, this.onload, this)};
     this.onload = null;
-    this.resultat = {befolkning: null}
 }
 
-function load(url,callback, objekt){
+function load(url,callback, object){
     let xhr = new XMLHttpRequest();
     xhr.open("GET", url);
     xhr.onreadystatechange = function(){
         if (xhr.readyState === 4 && xhr.status === 200) {
-            objekt.data = JSON.parse(xhr.responseText);
+            object.data = JSON.parse(xhr.responseText);
 
             if (callback){
-                callback(response);
+                callback(object.data);
             }
         }
 
     };
     xhr.send()
 }
-
-//load("http://wildboy.uib.no/~tpe056/folk/104857.json");
 
 function getNames(data){
     let array = [];
@@ -55,7 +57,32 @@ function getIDs(data){
     return array
 }
 
+function getInfo(data, id){
+    let regex = /\d{4}/;
+    let search_key = id.match(regex);
+    if (search_key !== null){
+        for (let value in data["elementer"]){
+            let value_1 = search_key[0];
+            let value_2 = data["elementer"][value];
+            if (value_1 === value_2["kommunenummer"] ){
+                return value_2
+            }
+        }
+    }
+    if (search_key === null){
+        throw "Feil: Skriv inn et gyldig kommunenummer"
+    }
+}
 
-let x = new Population("http://wildboy.uib.no/~tpe056/folk/104857.json");
 
-window.onload = x.load();
+let population = new Search(befolkning);
+let employed = new Search(sysselsatte);
+let education = new Search(utdanning);
+
+function run() {
+    population.load();
+    employed.load();
+    education.load();
+}
+
+window.onload = run();
