@@ -74,6 +74,27 @@ function getInfo(data, id){
     }
 }
 
+function overview(){
+    let id_list = population.getIDs();
+    let name_list = population.getNames();
+    let total_population = calculate_population(population.data);
+    for (let i = 0; i < id_list.length; i++) {
+        let li = document.createElement("LI");
+        li.appendChild(document.createTextNode(name_list[i]+", "+id_list[i]+", "+total_population[i]));
+        document.getElementById("overview_list").appendChild(li);
+    }
+}
+
+function calculate_population(data){
+    let array = [];
+    for(let value in data["elementer"]){
+        let women = data["elementer"][value]["Kvinner"]["2018"];
+        let man = data["elementer"][value]["Menn"]["2018"];
+        array.push(women+man)
+    }
+    return array
+}
+
 
 let population = new Search(befolkning, "population");
 let employed = new Search(sysselsatte, "employed");
