@@ -14,8 +14,8 @@ function alterDiv(number) {
 
 function Population(url){
     this.url = url;
-    this.getNames = function(){if(this.data){getNames(this.data)}};
-    this.getIDs = "";//getIDs;
+    this.getNames = function(){if(this.data){return getNames(this.data)}};
+    this.getIDs = function(){if(this.data){return getIDs(this.data)}};
     this.load = function(){load(this.url, this.onload, this)};
     this.onload = null;
     this.resultat = {befolkning: null}
@@ -47,5 +47,15 @@ function getNames(data){
     return array
 }
 
+function getIDs(data){
+    let array = [];
+    for (let municipality in data["elementer"]){
+        array.push(data["elementer"][municipality]["kommunenummer"])
+    }
+    return array
+}
+
 
 let x = new Population("http://wildboy.uib.no/~tpe056/folk/104857.json");
+
+window.onload = x.load();
