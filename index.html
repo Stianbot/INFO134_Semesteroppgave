@@ -6,11 +6,11 @@
     <script src="master.js"></script>
     <title>Folk</title>
 </head>
-<body onload="alterDiv()">
+<body onload="alterDiv();program()">
 <div id="navigasjon">
     <button onclick="alterDiv(0)">Introduksjon</button>
-    <button onclick="alterDiv(1); overview()">Oversikt</button>
-    <button onclick="alterDiv(2)">Detaljer</button>
+    <button onclick="alterDiv(1)" id="overview_button">Oversikt</button>
+    <button onclick="alterDiv(2)" >Detaljer</button>
     <button onclick="alterDiv(3)">Sammenligning</button>
 </div>
 
@@ -20,7 +20,11 @@
 <div id="overview">
     <ul id="overview_list"></ul>
 </div>
-<div id="details">Detaljer</div>
+<div id="details">
+
+    <label for="input">KommuneID: </label><input id="input"> <button id="details_button">Søk</button>
+    <div id="details_data"></div>
+</div>
 <div id="compare">Sammenligning</div>
 </body>
 </html>
