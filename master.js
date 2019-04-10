@@ -14,24 +14,30 @@ function alterDiv(number) {
 
 function Population(url){
     this.url = url;
-    this.getNames = getNames;
-    this.getIDs = getIDs;
-    this.load = load;
+    this.getNames = function(){if(this.data){getNames(this.data)}};
+    this.getIDs = "";//getIDs;
+    this.load = function(){load(this.url, this.onload, this)};
     this.onload = null;
+    this.resultat = {befolkning: null}
 }
 
-function load(url){
+function load(url,callback, objekt){
     let xhr = new XMLHttpRequest();
     xhr.open("GET", url);
     xhr.onreadystatechange = function(){
         if (xhr.readyState === 4 && xhr.status === 200) {
-            let response = JSON.parse(xhr.responseText);
+            objekt.data = JSON.parse(xhr.responseText);
+
+            if (callback){
+                callback(response);
+            }
         }
+
     };
     xhr.send()
 }
 
-load("http://wildboy.uib.no/~tpe056/folk/104857.json");
+//load("http://wildboy.uib.no/~tpe056/folk/104857.json");
 
 function getNames(data){
     let array = [];
@@ -40,3 +46,6 @@ function getNames(data){
     }
     return array
 }
+
+
+let x = new Population("http://wildboy.uib.no/~tpe056/folk/104857.json");
