@@ -87,18 +87,14 @@ function overview(population){
     while (placement.firstChild){
         placement.removeChild(placement.firstChild)
     }
-
-    let list = [];
     let id_list = population.getIDs();
     let name_list = population.getNames();
     let total_population = calculate_population(population.data);
     for (let i = 0; i < id_list.length; i++) {
         let li = document.createElement("LI");
-        li.appendChild(document.createTextNode(name_list[i]+", "+id_list[i]+", "+total_population[i]));
+        li.appendChild(document.createTextNode("[navn: "+name_list[i]+"] [id: "+id_list[i]+"] [populasjon: "+total_population[i]+"]"));
         placement.appendChild(li);
-        list.push([name_list[i],id_list[i],total_population[i]])
     }
-    return list
 }
 
 function calculate_population(data){
