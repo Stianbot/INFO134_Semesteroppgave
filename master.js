@@ -158,11 +158,13 @@ function details(pop,emp,edu){
     let pop_data = get_population_details(pop);
     let emp_data = get_employed_details(emp);
     let edu_data = get_education_details(edu);
+    console.log(edu)
     let pop_data_result = "[navn: "+pop_data.name+"] [id: "+pop_data.id+"] [populasjon: "+pop_data.total_population+"] ";
     let emp_data_result = "[%ansatt: "+emp_data+"] [ansatt: "+calculate_amount(pop_data.total_population,emp_data)+"] ";
     let edu_data_result = "[%utdannet: " + edu_data.total+"] [utdannet: "+calculate_amount(pop_data.total_population,edu_data.total)+"]";
     let result =  pop_data_result + emp_data_result + edu_data_result;
     document.getElementById("details_data").appendChild(document.createTextNode(result));
+    historic_development(pop,emp,edu)
 }
 
 function calculate_amount(number,percentage) {
@@ -171,7 +173,6 @@ return parseInt((number/100)*percentage)
 
 function alterBtn(bool) {
     let btn = document.getElementsByTagName("button");
-    console.log(btn);
     for (let i = 0; i < btn.length ; i++) {
         btn[i].disabled = bool
     }
@@ -181,6 +182,72 @@ function loadingScreen() {
     document.getElementById("loading").style.display = "none";
 }
 
+function historic_development(pop,emp,edu) {
+    let input = regex_check(document.getElementById("input").value);
+    let pop_data = pop.getInfo(input);
+    let emp_data = emp.getInfo(input);
+    let edu_data = edu.getInfo(input);
+
+    //let pop_man = trim(JSON.stringify(pop_data["Menn"])).split(",");
+    //let pop_women = trim(JSON.stringify(pop_data["Kvinner"])).split(",");
+    //placeHTML("pop_women",pop_women);
+    //placeHTML("pop_man",pop_man);
+    //let emp_man = trim(JSON.stringify(emp_data["Menn"])).split(",");
+    //let emp_women = trim(JSON.stringify(emp_data["Kvinner"])).split(",");
+    //placeHTML("emp_man", emp_man);
+    //placeHTML("emp_women", emp_women);
+
+    trim_and_place(pop_data,"Menn","pop_man");
+    trim_and_place(pop_data,"Kvinner", "pop_women");
+    trim_and_place(emp_data,"Menn", "emp_man");
+    trim_and_place(emp_data,"Kvinner", "emp_women");
+    trim_and_place(edu_data,"Menn","edu_01_man", "01");
+    trim_and_place(edu_data,"Kvinner", "edu_01_women", "01");
+    trim_and_place(edu_data,"Menn", "edu_02a_man", "02a");
+    trim_and_place(edu_data,"Kvinner", "edu_02a_women", "02a");
+
+    trim_and_place(edu_data,"Menn", "edu_03a_man", "03a");
+    trim_and_place(edu_data,"Kvinner", "edu_03a_women", "03a");
+
+    trim_and_place(edu_data,"Menn", "edu_04a_man", "04a");
+    trim_and_place(edu_data,"Kvinner", "edu_04a_women", "04a");
+
+    trim_and_place(edu_data,"Menn", "edu_09a_man", "09a");
+    trim_and_place(edu_data,"Kvinner", "edu_09a_women", "09a");
+
+    trim_and_place(edu_data,"Menn", "edu_11_man", "11");
+    trim_and_place(edu_data,"Kvinner", "edu_11_women", "11");
+
+
+
+
+}
+
+function trim_and_place(data,gender,id,edu) {
+
+    if (edu === undefined){
+        let trimmed = trim(JSON.stringify(data[gender])).split(",");
+        placeHTML(id,trimmed)
+    } if (edu){
+        let trimmed = trim(JSON.stringify(data[edu][gender])).split(",")
+        placeHTML(id,trimmed)
+    }
+
+}
+
+function trim(text) {
+    return text.replace(/[^a-zA-Z0-9.,:]/g, "");
+}
+
+function placeHTML(id, data) {
+    let placement = document.getElementById(id);
+    for (let i = 0; i < data.length; i++) {
+        let text = document.createTextNode(data[i]);
+        let b = document.createElement("li");
+        b.appendChild(text);
+        placement.appendChild(b);
+    }
+}
 
 function prep() {
     alterBtn(true);
