@@ -188,21 +188,15 @@ function historic_development(pop,emp,edu) {
     let emp_data = emp.getInfo(input);
     let edu_data = edu.getInfo(input);
 
-    //let pop_man = trim(JSON.stringify(pop_data["Menn"])).split(",");
-    //let pop_women = trim(JSON.stringify(pop_data["Kvinner"])).split(",");
-    //placeHTML("pop_women",pop_women);
-    //placeHTML("pop_man",pop_man);
-    //let emp_man = trim(JSON.stringify(emp_data["Menn"])).split(",");
-    //let emp_women = trim(JSON.stringify(emp_data["Kvinner"])).split(",");
-    //placeHTML("emp_man", emp_man);
-    //placeHTML("emp_women", emp_women);
-
     trim_and_place(pop_data,"Menn","pop_man");
     trim_and_place(pop_data,"Kvinner", "pop_women");
+
     trim_and_place(emp_data,"Menn", "emp_man");
     trim_and_place(emp_data,"Kvinner", "emp_women");
+
     trim_and_place(edu_data,"Menn","edu_01_man", "01");
     trim_and_place(edu_data,"Kvinner", "edu_01_women", "01");
+
     trim_and_place(edu_data,"Menn", "edu_02a_man", "02a");
     trim_and_place(edu_data,"Kvinner", "edu_02a_women", "02a");
 
@@ -217,14 +211,9 @@ function historic_development(pop,emp,edu) {
 
     trim_and_place(edu_data,"Menn", "edu_11_man", "11");
     trim_and_place(edu_data,"Kvinner", "edu_11_women", "11");
-
-
-
-
 }
 
 function trim_and_place(data,gender,id,edu) {
-
     if (edu === undefined){
         let trimmed = trim(JSON.stringify(data[gender])).split(",");
         placeHTML(id,trimmed)
@@ -232,7 +221,6 @@ function trim_and_place(data,gender,id,edu) {
         let trimmed = trim(JSON.stringify(data[edu][gender])).split(",")
         placeHTML(id,trimmed)
     }
-
 }
 
 function trim(text) {
