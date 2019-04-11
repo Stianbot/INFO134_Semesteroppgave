@@ -1,5 +1,6 @@
 body{
-
+    font-family: "Courier New", Courier,monospace;
+    /*font-family: "Lucida Console",Monaco,monospace;*/
     background-color: black;
     color: #fff509;
     font-size: 17px;
@@ -12,6 +13,7 @@ body{
     display: block;
 }
 button {
+    font-family: "Courier New", Courier,monospace;
     font-size: 15px;
     background-color: black;
     color: #fff509;
@@ -35,4 +37,8 @@ li:nth-child(odd){
 li{
 
     padding: 0.5%;
+}
+
+#loading{
+    font-size: 50px;
 }
