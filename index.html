@@ -6,14 +6,14 @@
     <script src="master.js"></script>
     <title>Folk</title>
 </head>
-<body onload="alterDiv();program()">
+<body onload="alterDiv();prep()">
 <div id="navigasjon">
-    <button onclick="alterDiv(0)">Introduksjon</button>
-    <button onclick="alterDiv(1)" id="overview_button">Oversikt</button>
-    <button onclick="alterDiv(2)" >Detaljer</button>
-    <button onclick="alterDiv(3)">Sammenligning</button>
+    <button id="btn_1" onclick="alterDiv(0)">Introduksjon</button>
+    <button id="btn_2" onclick="alterDiv(1)">Oversikt</button>
+    <button id="btn_3" onclick="alterDiv(2)" >Detaljer</button>
+    <button id="btn_4" onclick="alterDiv(3)">Sammenligning</button>
 </div>
-
+<div id="loading"> LASTER</div>
 <div id="intro">
     Denne siden er et verktøy som lar deg hente statistikk over kommuner i Norge.
 </div>
