@@ -177,30 +177,24 @@ function alterBtn(bool) {
     }
 }
 
+function loadingScreen() {
+    document.getElementById("loading").style.display = "none";
+}
 
-function program() {
+
+function prep() {
     alterBtn(true);
     let population = new Search(urls()[0], "population", function(){employed.load()});
     let employed = new Search(urls()[1], "employed", function () {education.load()});
-    let education = new Search(urls()[2], "education", function () {alterBtn(false)});
+    let education = new Search(urls()[2], "education", function () {alterBtn(false);loadingScreen()});
     population.load();
-
-
-
-
-
-
-
-
-    document.getElementById("overview_button").addEventListener("click",function () {
+    
+    document.getElementById("btn_2").addEventListener("click",function () {
         overview(population)
     });
 
     document.getElementById("details_button").addEventListener("click", function () {
-
         details(population,employed,education)
     });
 }
-
-
 
