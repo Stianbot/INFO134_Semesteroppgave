@@ -5,7 +5,6 @@ function urls(){
     return [befolkning,sysselsatte,utdanning]
 }
 
-
 function get(id) {
     return document.getElementById(id)
 }
@@ -20,14 +19,14 @@ function alterDiv(number) {
     }
 }
 
-function Search(url, description){
+function Search(url, description, onload){
     this.url = url;
     this.description = description;
     this.getNames = function(){if(this.data){return getNames(this.data)}};
     this.getIDs = function(){if(this.data){return getIDs(this.data)}};
     this.getInfo = function(id){if(this.data){return getInfo(this.data, id)}};
     this.load = function(){load(this.url, this.onload, this)};
-    this.onload = null;
+    this.onload = onload||null;
 }
 
 function load(url,callback, object){
@@ -38,7 +37,7 @@ function load(url,callback, object){
             object.data = JSON.parse(xhr.responseText);
 
             if (callback){
-                callback(object.data);
+                callback();
             }
         }
 
@@ -63,7 +62,7 @@ function getIDs(data){
 }
 
 function getInfo(data, id){
-    let search_key =regex_check(id);
+    let search_key = regex_check(id);
     if (search_key !== null){
         for (let value in data["elementer"]){
             if (search_key === data["elementer"][value]["kommunenummer"] ){
@@ -162,7 +161,7 @@ function details(pop,emp,edu){
     let pop_data_result = "[navn: "+pop_data.name+"] [id: "+pop_data.id+"] [populasjon: "+pop_data.total_population+"] ";
     let emp_data_result = "[%ansatt: "+emp_data+"] [ansatt: "+calculate_amount(pop_data.total_population,emp_data)+"] ";
     let edu_data_result = "[%utdannet: " + edu_data.total+"] [utdannet: "+calculate_amount(pop_data.total_population,edu_data.total)+"]";
-    let result =  pop_data_result + emp_data_result + edu_data_result
+    let result =  pop_data_result + emp_data_result + edu_data_result;
     document.getElementById("details_data").appendChild(document.createTextNode(result));
 }
 
@@ -170,14 +169,28 @@ function calculate_amount(number,percentage) {
 return parseInt((number/100)*percentage)
 }
 
+function alterBtn(bool) {
+    let btn = document.getElementsByTagName("button");
+    console.log(btn);
+    for (let i = 0; i < btn.length ; i++) {
+        btn[i].disabled = bool
+    }
+}
+
 
 function program() {
-    let population = new Search(urls()[0], "population");
-    let employed = new Search(urls()[1], "employed");
-    let education = new Search(urls()[2], "education");
+    alterBtn(true);
+    let population = new Search(urls()[0], "population", function(){employed.load()});
+    let employed = new Search(urls()[1], "employed", function () {education.load()});
+    let education = new Search(urls()[2], "education", function () {alterBtn(false)});
     population.load();
-    employed.load();
-    education.load();
+
+
+
+
+
+
+
 
     document.getElementById("overview_button").addEventListener("click",function () {
         overview(population)
