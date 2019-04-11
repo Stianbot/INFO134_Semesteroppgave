@@ -1,6 +1,10 @@
-let befolkning = "http://wildboy.uib.no/~tpe056/folk/104857.json";
-let sysselsatte = "http://wildboy.uib.no/~tpe056/folk/100145.json";
-let utdanning = "http://wildboy.uib.no/~tpe056/folk/85432.json";
+function urls(){
+    let befolkning = "http://wildboy.uib.no/~tpe056/folk/104857.json";
+    let sysselsatte = "http://wildboy.uib.no/~tpe056/folk/100145.json";
+    let utdanning = "http://wildboy.uib.no/~tpe056/folk/85432.json";
+    return [befolkning,sysselsatte,utdanning]
+}
+
 
 function get(id) {
     return document.getElementById(id)
@@ -128,9 +132,9 @@ function details(data){
 
 
 function program() {
-    let population = new Search(befolkning, "population");
-    let employed = new Search(sysselsatte, "employed");
-    let education = new Search(utdanning, "education");
+    let population = new Search(urls()[0], "population");
+    let employed = new Search(urls()[1], "employed");
+    let education = new Search(urls()[2], "education");
     population.load();
     employed.load();
     education.load();
