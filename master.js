@@ -111,24 +111,69 @@ function calculate_population(data){
     return array
 }
 
-function get_some_details(data){
+function get_population_details(data){
     let input = regex_check(document.getElementById("input").value);
     if (input !== null){
         let result = data.getInfo(input);
-        let population = result["Kvinner"]["2018"]+result["Menn"]["2018"];
-        let text  = result.name+" "+result.kommunenummer+" "+ population;
-        console.log(result);
-        document.getElementById("details_data").appendChild(document.createTextNode(text));
+        let total_population = result["Kvinner"]["2018"]+ result["Menn"]["2018"];
+        return {name:result.name, id:result.kommunenummer,total_population:total_population};
+
+
     }
     if (input === null){
         throw "Feil: Skriv inn et gyldig kommunenummer"
     }
 }
 
-function details(data){
-    get_some_details(data)
+function get_employed_details(data) {
+    let input = regex_check(document.getElementById("input").value);
+    if (input !== null){
+        let result = data.getInfo(input);
+        return result["Begge kjønn"]["2018"];
+    }
+
 }
 
+function calculate_educated(data){
+    let man_short = data["03a"]["Menn"]["2017"];
+    let man_long = data["04a"]["Menn"]["2017"];
+    let woman_short = data["03a"]["Kvinner"]["2017"];
+    let woman_long = data["04a"]["Kvinner"]["2017"];
+    let result = {
+        man_short:man_short,
+        man_long:man_long,
+        man_total:man_short+man_long,
+        woman_short:woman_short,
+        woman_long:woman_long,
+        woman_total:woman_short+woman_long
+    };
+    result.total = result.man_total + result.woman_total;
+    return result
+}
+
+function get_education_details(data){
+    let input = regex_check(document.getElementById("input").value);
+    if (input !== null){
+        let result = data.getInfo(input);
+        return calculate_educated(result);
+    }
+}
+
+function details(pop,emp,edu){
+    let pop_data = get_population_details(pop);
+    let emp_data = get_employed_details(emp);
+    let edu_data = get_education_details(edu);
+
+    let result = "[navn: "+pop_data.name+"] [id: "+pop_data.id+"] [populasjon: "+pop_data.total_population+"] [%ansatt: "+ emp_data + "] [ansatt: " + calculate_amount(pop_data.total_population,emp_data) + "] " + "[%utdannet: " + edu_data.total+"] [utdannet:" + calculate_amount(pop_data,edu_data.total)+"]";
+
+
+
+    document.getElementById("details_data").appendChild(document.createTextNode(result));
+}
+
+function calculate_amount(number,percentage) {
+return parseInt((number/100)*percentage)
+}
 
 
 function program() {
@@ -145,7 +190,7 @@ function program() {
 
     document.getElementById("details_button").addEventListener("click", function () {
 
-        details(population)
+        details(population,employed,education)
     });
 }
 
