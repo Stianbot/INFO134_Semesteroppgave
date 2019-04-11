@@ -163,11 +163,10 @@ function details(pop,emp,edu){
     let pop_data = get_population_details(pop);
     let emp_data = get_employed_details(emp);
     let edu_data = get_education_details(edu);
-
-    let result = "[navn: "+pop_data.name+"] [id: "+pop_data.id+"] [populasjon: "+pop_data.total_population+"] [%ansatt: "+ emp_data + "] [ansatt: " + calculate_amount(pop_data.total_population,emp_data) + "] " + "[%utdannet: " + edu_data.total+"] [utdannet:" + calculate_amount(pop_data,edu_data.total)+"]";
-
-
-
+    let pop_data_result = "[navn: "+pop_data.name+"] [id: "+pop_data.id+"] [populasjon: "+pop_data.total_population+"] ";
+    let emp_data_result = "[%ansatt: "+emp_data+"] [ansatt: "+calculate_amount(pop_data.total_population,emp_data)+"] ";
+    let edu_data_result = "[%utdannet: " + edu_data.total+"] [utdannet: "+calculate_amount(pop_data.total_population,edu_data.total)+"]";
+    let result =  pop_data_result + emp_data_result + edu_data_result
     document.getElementById("details_data").appendChild(document.createTextNode(result));
 }
 
