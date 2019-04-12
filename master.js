@@ -19,9 +19,8 @@ function alterDiv(number) {
     }
 }
 
-function Search(url, description, onload){
+function Search(url, onload){
     this.url = url;
-    this.description = description;
     this.getNames = function(){if(this.data){return getNames(this.data)}};
     this.getIDs = function(){if(this.data){return getIDs(this.data)}};
     this.getInfo = function(id){if(this.data){return getInfo(this.data, id)}};
@@ -29,7 +28,7 @@ function Search(url, description, onload){
     this.onload = onload||null;
 }
 
-function load(url,callback, object){
+function load(url, callback, object){
     let xhr = new XMLHttpRequest();
     xhr.open("GET", url);
     xhr.onreadystatechange = function(){
@@ -40,7 +39,6 @@ function load(url,callback, object){
                 callback();
             }
         }
-
     };
     xhr.send()
 }
@@ -158,7 +156,6 @@ function details(pop,emp,edu){
     let pop_data = get_population_details(pop);
     let emp_data = get_employed_details(emp);
     let edu_data = get_education_details(edu);
-    console.log(edu)
     let pop_data_result = "[navn: "+pop_data.name+"] [id: "+pop_data.id+"] [populasjon: "+pop_data.total_population+"] ";
     let emp_data_result = "[%ansatt: "+emp_data+"] [ansatt: "+calculate_amount(pop_data.total_population,emp_data)+"] ";
     let edu_data_result = "[%utdannet: " + edu_data.total+"] [utdannet: "+calculate_amount(pop_data.total_population,edu_data.total)+"]";
@@ -213,35 +210,106 @@ function historic_development(pop,emp,edu) {
     trim_and_place(edu_data,"Kvinner", "edu_11_women", "11");
 }
 
-function trim_and_place(data,gender,id,edu) {
+function trim_and_place(data,gender,id,edu, extra_text) {
     if (edu === undefined){
         let trimmed = trim(JSON.stringify(data[gender])).split(",");
-        placeHTML(id,trimmed)
+        placeHTML(id,trimmed, extra_text)
     } if (edu){
-        let trimmed = trim(JSON.stringify(data[edu][gender])).split(",")
-        placeHTML(id,trimmed)
+        let trimmed = trim(JSON.stringify(data[edu][gender])).split(",");
+        placeHTML(id,trimmed,extra_text)
     }
 }
 
 function trim(text) {
-    return text.replace(/[^a-zA-Z0-9.,:]/g, "");
+    return text.replace(/[^a-zA-Z0-9.,:\s*]/g, "");
 }
 
-function placeHTML(id, data) {
+function placeHTML(id, data, extra_text) {
     let placement = document.getElementById(id);
     for (let i = 0; i < data.length; i++) {
-        let text = document.createTextNode(data[i]);
-        let b = document.createElement("li");
-        b.appendChild(text);
-        placement.appendChild(b);
+        if (extra_text !== undefined){
+            let text = document.createTextNode(data[i]+ " "+ extra_text[i]);
+            let b = document.createElement("li");
+            b.appendChild(text);
+            placement.appendChild(b);
+        }
+        if (extra_text === undefined){
+            let text = document.createTextNode(data[i]);
+            let b = document.createElement("li");
+            b.appendChild(text);
+            placement.appendChild(b);
+        }
+
     }
+}
+function placeTitle(id,data) {
+    let placement = document.getElementById(id);
+    let text = document.createTextNode(data);
+    placement.appendChild(text)
+}
+
+function compare(pop,emp,edu) {
+    let mun_1 = regex_check(document.getElementById("comp_1").value);
+    let mun_2 = regex_check(document.getElementById("comp_2").value);
+    let emp_mun_1 = emp.getInfo(mun_1);
+    let emp_mun_2 = emp.getInfo(mun_2);
+
+    let mun_1_growth = com_data(emp_mun_1,"Menn");
+    let mun_2_growth = com_data(emp_mun_2, "Menn");
+
+    let resulatat = compare_growth(mun_1_growth,mun_2_growth);
+    console.log(resulatat)
+
+    placeTitle("mun_1_man", emp_mun_1.name+" Menn");
+    placeTitle("mun_2_man", emp_mun_2.name+" Menn");
+
+    trim_and_place(emp_mun_1,"Menn", "mun_1_liste", undefined, resulatat[0]);
+    trim_and_place(emp_mun_2,"Menn", "mun_2_liste", undefined, resulatat[1]);
+
+}
+
+function com_data(data,gender) {
+    let d1 = [];
+    for (let x in data[gender]){
+        if (x == 2005){
+            d1.push("0")
+        }
+
+        if (x > 2005){
+            let temp = data[gender][x] - data[gender][x-1];
+            d1.push(temp);
+        }
+
+    }
+    return d1
+    
+}
+
+function compare_growth(data,data2) {
+    let array = [];
+    let array2 = [];
+    for (let i = 0; i <data.length ; i++) {
+        if (data[i] > data2[i]){
+            array.push("Høyest vekst " + data[i].toFixed(1));
+            array2.push("Minst vekst " + data2[i].toFixed(1))
+        }
+        if (data[i] < data2[i]){
+            array2.push("Høyest vekst " + data2[i].toFixed(1));
+            array.push("Minst vekst " + data[i].toFixed(1))
+        }
+        if (data[i] === data2[i]){
+            array.push("Utgangspunkt");
+            array2.push("Utgangspunkt");
+        }
+    }
+    return [array,array2]
 }
 
 function prep() {
     alterBtn(true);
-    let population = new Search(urls()[0], "population", function(){employed.load()});
-    let employed = new Search(urls()[1], "employed", function () {education.load()});
-    let education = new Search(urls()[2], "education", function () {alterBtn(false);loadingScreen()});
+    let population = new Search(urls()[0], function(){employed.load()});
+    let employed = new Search(urls()[1], function () {education.load()});
+    let education = new Search(urls()[2], function () {alterBtn(false);loadingScreen()});
     population.load();
     
     document.getElementById("btn_2").addEventListener("click",function () {
@@ -251,5 +319,9 @@ function prep() {
     document.getElementById("details_button").addEventListener("click", function () {
         details(population,employed,education)
     });
+
+    document.getElementById("compare_button").addEventListener("click", function () {
+        compare(population,employed,education)
+    })
 }
 
