@@ -268,18 +268,34 @@ function compare(pop,emp,edu) {
     let mun_1_growth = com_data(emp_mun_1,"Menn");
     let mun_2_growth = com_data(emp_mun_2, "Menn");
 
-    let resulatat = compare_growth(mun_1_growth,mun_2_growth);
-    console.log(resulatat);
-    let resultat_total = sum_list(mun_1_growth, mun_2_growth);
+    let resulatat_man = compare_growth(mun_1_growth,mun_2_growth);
+    let resultat_total_man = sum_list(mun_1_growth, mun_2_growth);
 
     placeTitle("mun_1_man", emp_mun_1.name+" Menn");
     placeTitle("mun_2_man", emp_mun_2.name+" Menn");
 
-    trim_and_place(emp_mun_1,"Menn", "mun_1_liste", undefined, resulatat[0]);
-    trim_and_place(emp_mun_2,"Menn", "mun_2_liste", undefined, resulatat[1]);
+    trim_and_place(emp_mun_1,"Menn", "mun_1_liste", undefined, resulatat_man[0]);
+    trim_and_place(emp_mun_2,"Menn", "mun_2_liste", undefined, resulatat_man[1]);
 
-    placeTitle("mun_1_liste", resultat_total[0][0]+" "+resultat_total[0][1].toFixed(1), "LI");
-    placeTitle("mun_2_liste", resultat_total[1][0]+" "+resultat_total[1][1].toFixed(1), "LI");
+    placeTitle("mun_1_liste", resultat_total_man[0][0]+" "+resultat_total_man[0][1].toFixed(1), "LI");
+    placeTitle("mun_2_liste", resultat_total_man[1][0]+" "+resultat_total_man[1][1].toFixed(1), "LI");
+
+    let mun_3_growth = com_data(emp_mun_1,"Kvinner");
+    let mun_4_growth = com_data(emp_mun_2, "Kvinner");
+
+    let resulatat_women = compare_growth(mun_3_growth,mun_4_growth);
+    let resultat_total_women = sum_list(mun_3_growth, mun_4_growth);
+
+    console.log(resultat_total_women)
+
+    placeTitle("mun_1_women", emp_mun_1.name+" Kvinner");
+    placeTitle("mun_2_women", emp_mun_2.name+" Kvinner");
+
+    trim_and_place(emp_mun_1,"Kvinner", "mun_3_liste", undefined, resulatat_women[0]);
+    trim_and_place(emp_mun_2,"Kvinner", "mun_4_liste", undefined, resulatat_women[1]);
+
+    placeTitle("mun_3_liste", resultat_total_women[0][0]+" "+resultat_total_women[0][1].toFixed(1), "LI");
+    placeTitle("mun_4_liste", resultat_total_women[1][0]+" "+resultat_total_women[1][1].toFixed(1), "LI");
 
 }
 
@@ -310,15 +326,17 @@ function sum_list(data,data2) {
     }
 
     if ( x > y){
-        x = ["Total høyest vekst",x];
-        y = ["Total minst vekst", y];
+        let z = ["Total høyest vekst",x];
+        let q = ["Total minst vekst", y];
+        return[z,q]
     }
 
     if ( x < y){
-        y = ["Total høyest vekst",y];
-        x = ["Total minst vekst", x];
+        let z = ["Total høyest vekst", y];
+        let q = ["Total minst vekst", x];
+        return[z,q]
     }
-    return[x,y]
+
 }
 
 function compare_growth(data,data2) {
