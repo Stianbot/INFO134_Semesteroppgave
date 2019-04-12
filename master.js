@@ -157,14 +157,14 @@ function details(pop,emp,edu){
     let emp_data = get_employed_details(emp);
     let edu_data = get_education_details(edu);
     let pop_data_result = "[navn: "+pop_data.name+"] [id: "+pop_data.id+"] [populasjon: "+pop_data.total_population+"] ";
-    let emp_data_result = "[%ansatt: "+emp_data+"] [ansatt: "+calculate_amount(pop_data.total_population,emp_data)+"] ";
-    let edu_data_result = "[%utdannet: " + edu_data.total+"] [utdannet: "+calculate_amount(pop_data.total_population,edu_data.total)+"]";
+    let emp_data_result = "[%ansatt: "+emp_data+"] [ansatt: "+calculate(pop_data.total_population,emp_data)+"] ";
+    let edu_data_result = "[%utdannet: " + edu_data.total+"] [utdannet: "+calculate(pop_data.total_population,edu_data.total)+"]";
     let result =  pop_data_result + emp_data_result + edu_data_result;
     document.getElementById("details_data").appendChild(document.createTextNode(result));
     historic_development(pop,emp,edu)
 }
 
-function calculate_amount(number,percentage) {
+function calculate(number, percentage) {
 return parseInt((number/100)*percentage)
 }
 
@@ -185,43 +185,44 @@ function historic_development(pop,emp,edu) {
     let emp_data = emp.getInfo(input);
     let edu_data = edu.getInfo(input);
 
-    trim_and_place(pop_data,"Menn","pop_man");
-    trim_and_place(pop_data,"Kvinner", "pop_women");
+    trim(pop_data,"Menn","pop_man");
+    trim(pop_data,"Kvinner", "pop_women");
 
-    trim_and_place(emp_data,"Menn", "emp_man");
-    trim_and_place(emp_data,"Kvinner", "emp_women");
+    trim(emp_data,"Menn", "emp_man");
+    trim(emp_data,"Kvinner", "emp_women");
 
-    trim_and_place(edu_data,"Menn","edu_01_man", "01");
-    trim_and_place(edu_data,"Kvinner", "edu_01_women", "01");
+    trim(edu_data,"Menn","edu_01_man", "01");
+    trim(edu_data,"Kvinner", "edu_01_women", "01");
 
-    trim_and_place(edu_data,"Menn", "edu_02a_man", "02a");
-    trim_and_place(edu_data,"Kvinner", "edu_02a_women", "02a");
+    trim(edu_data,"Menn", "edu_02a_man", "02a");
+    trim(edu_data,"Kvinner", "edu_02a_women", "02a");
 
-    trim_and_place(edu_data,"Menn", "edu_03a_man", "03a");
-    trim_and_place(edu_data,"Kvinner", "edu_03a_women", "03a");
+    trim(edu_data,"Menn", "edu_03a_man", "03a");
+    trim(edu_data,"Kvinner", "edu_03a_women", "03a");
 
-    trim_and_place(edu_data,"Menn", "edu_04a_man", "04a");
-    trim_and_place(edu_data,"Kvinner", "edu_04a_women", "04a");
+    trim(edu_data,"Menn", "edu_04a_man", "04a");
+    trim(edu_data,"Kvinner", "edu_04a_women", "04a");
 
-    trim_and_place(edu_data,"Menn", "edu_09a_man", "09a");
-    trim_and_place(edu_data,"Kvinner", "edu_09a_women", "09a");
+    trim(edu_data,"Menn", "edu_09a_man", "09a");
+    trim(edu_data,"Kvinner", "edu_09a_women", "09a");
 
-    trim_and_place(edu_data,"Menn", "edu_11_man", "11");
-    trim_and_place(edu_data,"Kvinner", "edu_11_women", "11");
+    trim(edu_data,"Menn", "edu_11_man", "11");
+    trim(edu_data,"Kvinner", "edu_11_women", "11");
 }
 
-function trim_and_place(data,gender,id,edu, extra_text) {
+function trim(data, gender, id, edu, extra_text) {
     if (edu === undefined){
-        let trimmed = trim(JSON.stringify(data[gender])).split(",");
+        let trimmed = clean(JSON.stringify(data[gender])).split(",");
         placeHTML(id,trimmed, extra_text)
     } if (edu){
-        let trimmed = trim(JSON.stringify(data[edu][gender])).split(",");
+        let trimmed = clean(JSON.stringify(data[edu][gender])).split(",");
         placeHTML(id,trimmed,extra_text)
     }
 }
 
-function trim(text) {
-    return text.replace(/[^a-zA-Z0-9.,:\s*]/g, "");
+function clean(text) {
+    let cleaned = text.replace(/[^a-zA-Z0-9.,:\s*]/g, "")
+    return cleaned.replace(/[:]/g,": ")
 }
 
 function placeHTML(id, data, extra_text) {
@@ -265,6 +266,8 @@ function compare(pop,emp,edu) {
     let emp_mun_1 = emp.getInfo(mun_1);
     let emp_mun_2 = emp.getInfo(mun_2);
 
+    console.log(emp_mun_1)
+
     let mun_1_growth = com_data(emp_mun_1,"Menn");
     let mun_2_growth = com_data(emp_mun_2, "Menn");
 
@@ -274,8 +277,8 @@ function compare(pop,emp,edu) {
     placeTitle("mun_1_man", emp_mun_1.name+" Menn");
     placeTitle("mun_2_man", emp_mun_2.name+" Menn");
 
-    trim_and_place(emp_mun_1,"Menn", "mun_1_liste", undefined, resulatat_man[0]);
-    trim_and_place(emp_mun_2,"Menn", "mun_2_liste", undefined, resulatat_man[1]);
+    trim(emp_mun_1,"Menn", "mun_1_liste", undefined, resulatat_man[0]);
+    trim(emp_mun_2,"Menn", "mun_2_liste", undefined, resulatat_man[1]);
 
     placeTitle("mun_1_liste", resultat_total_man[0][0]+" "+resultat_total_man[0][1].toFixed(1), "LI");
     placeTitle("mun_2_liste", resultat_total_man[1][0]+" "+resultat_total_man[1][1].toFixed(1), "LI");
@@ -291,8 +294,8 @@ function compare(pop,emp,edu) {
     placeTitle("mun_1_women", emp_mun_1.name+" Kvinner");
     placeTitle("mun_2_women", emp_mun_2.name+" Kvinner");
 
-    trim_and_place(emp_mun_1,"Kvinner", "mun_3_liste", undefined, resulatat_women[0]);
-    trim_and_place(emp_mun_2,"Kvinner", "mun_4_liste", undefined, resulatat_women[1]);
+    trim(emp_mun_1,"Kvinner", "mun_3_liste", undefined, resulatat_women[0]);
+    trim(emp_mun_2,"Kvinner", "mun_4_liste", undefined, resulatat_women[1]);
 
     placeTitle("mun_3_liste", resultat_total_women[0][0]+" "+resultat_total_women[0][1].toFixed(1), "LI");
     placeTitle("mun_4_liste", resultat_total_women[1][0]+" "+resultat_total_women[1][1].toFixed(1), "LI");
