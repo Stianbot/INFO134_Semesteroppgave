@@ -242,10 +242,21 @@ function placeHTML(id, data, extra_text) {
 
     }
 }
-function placeTitle(id,data) {
-    let placement = document.getElementById(id);
-    let text = document.createTextNode(data);
-    placement.appendChild(text)
+function placeTitle(id,data, type) {
+
+    if (type === undefined){
+        let placement = document.getElementById(id);
+        let text = document.createTextNode(data);
+        placement.appendChild(text)
+    }
+
+    if (type !== undefined){
+        let placement = document.getElementById(id);
+        let element = document.createElement(type);
+        let text = document.createTextNode(data);
+        element.appendChild(text);
+        placement.appendChild(element)
+    }
 }
 
 function compare(pop,emp,edu) {
@@ -258,7 +269,8 @@ function compare(pop,emp,edu) {
     let mun_2_growth = com_data(emp_mun_2, "Menn");
 
     let resulatat = compare_growth(mun_1_growth,mun_2_growth);
-    console.log(resulatat)
+    console.log(resulatat);
+    let resultat_total = sum_list(mun_1_growth, mun_2_growth);
 
     placeTitle("mun_1_man", emp_mun_1.name+" Menn");
     placeTitle("mun_2_man", emp_mun_2.name+" Menn");
@@ -266,11 +278,15 @@ function compare(pop,emp,edu) {
     trim_and_place(emp_mun_1,"Menn", "mun_1_liste", undefined, resulatat[0]);
     trim_and_place(emp_mun_2,"Menn", "mun_2_liste", undefined, resulatat[1]);
 
+    placeTitle("mun_1_liste", resultat_total[0][0]+" "+resultat_total[0][1].toFixed(1), "LI");
+    placeTitle("mun_2_liste", resultat_total[1][0]+" "+resultat_total[1][1].toFixed(1), "LI");
+
 }
 
 function com_data(data,gender) {
     let d1 = [];
     for (let x in data[gender]){
+        // noinspection EqualityComparisonWithCoercionJS
         if (x == 2005){
             d1.push("0")
         }
@@ -283,6 +299,26 @@ function com_data(data,gender) {
     }
     return d1
     
+}
+
+function sum_list(data,data2) {
+    let x = 0;
+    let y = 0;
+    for (let i = 0; i < data.length; i++) {
+        x += parseFloat(data[i]);
+        y += parseFloat(data2[i]);
+    }
+
+    if ( x > y){
+        x = ["Total høyest vekst",x];
+        y = ["Total minst vekst", y];
+    }
+
+    if ( x < y){
+        y = ["Total høyest vekst",y];
+        x = ["Total minst vekst", x];
+    }
+    return[x,y]
 }
 
 function compare_growth(data,data2) {
