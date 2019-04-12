@@ -368,8 +368,8 @@ function compare_growth(data,data2) {
             array2.push("Minst vekst: " + data2[i].toFixed(1))
         }
         if (data[i] < data2[i]){
-            array2.push("Høyest vekst " + data2[i].toFixed(1));
-            array.push("Minst vekst " + data[i].toFixed(1))
+            array2.push("Høyest vekst: " + data2[i].toFixed(1));
+            array.push("Minst vekst: " + data[i].toFixed(1))
         }
         if (data[i] === data2[i] && i !== 0){
             array2.push("Lik vekst: " + data2[i].toFixed(1));
