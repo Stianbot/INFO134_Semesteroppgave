@@ -1,3 +1,4 @@
+/*Funksjon for lagring av url-er til de ulike datasettene.*/
 function urls(){
     let befolkning = "http://wildboy.uib.no/~tpe056/folk/104857.json";
     let sysselsatte = "http://wildboy.uib.no/~tpe056/folk/100145.json";
@@ -5,9 +6,12 @@ function urls(){
     return [befolkning,sysselsatte,utdanning]
 }
 
+/*Funksjon som henter et element basert på id.*/
 function get(id) {
     return document.getElementById(id)
 }
+
+/*Funksjon for å vise og skjule elementer. Viser elementet som har index lik 'number' i parameter*/
 function alterDiv(number) {
     let array = [get("intro"),get("overview"),get("details"), get("compare")];
     for (let i = 0; i < array.length; i++) {
@@ -19,6 +23,7 @@ function alterDiv(number) {
     }
 }
 
+/*Konstruktør for et søkeobjekt som henter et datasett*/
 function Search(url, onload){
     this.url = url;
     this.getNames = function(){if(this.data){return getNames(this.data)}};
@@ -28,6 +33,7 @@ function Search(url, onload){
     this.onload = onload||null;
 }
 
+/*Funksjon som henter et datasett. tar inn url, en callback funksjon og et objekt. Ment for bruk av Search.load()*/
 function load(url, callback, object){
     let xhr = new XMLHttpRequest();
     xhr.open("GET", url);
@@ -43,6 +49,7 @@ function load(url, callback, object){
     xhr.send()
 }
 
+/*Funksjon for å hente navn på alle kommuner i et datasett. Ment for bruk av Search.getNames()*/
 function getNames(data){
     let array = [];
     for (let municipality in data.elementer){
@@ -51,6 +58,7 @@ function getNames(data){
     return array
 }
 
+/*Funksjon for å hente kommunenummer til alle kommuner i et datasett. Ment for bruk av Search.getIDs()*/
 function getIDs(data){
     let array = [];
     for (let municipality in data["elementer"]){
@@ -59,6 +67,7 @@ function getIDs(data){
     return array
 }
 
+/*Funksjon for å hente et kommune-objekt fra et datasett. Ment for bruk av Search.getInfo()*/
 function getInfo(data, id){
     let search_key = regex_check(id);
     if (search_key !== null){
@@ -74,11 +83,13 @@ function getInfo(data, id){
     }
 }
 
+/*Funksjon som sjekker at input består av fire tall, returnerer de fire tallene eller null*/
 function regex_check(id) {
-    let regex = /\d{4}/;
+    let regex = /\d{4}/g;
     return id.match(regex)[0];
 }
 
+/*Funksjon for å hente informajon som skal i Oversikt-delen av oppgaven*/
 function overview(population){
     let placement = document.getElementById("overview_list");
     while (placement.firstChild){
@@ -94,6 +105,7 @@ function overview(population){
     }
 }
 
+/*Funksjon som regner ut total befolkning ved å plusse sammen antall menn i 2018 med antall kvinner i 2018. returnerer en liste*/
 function calculate_population(data){
     let array = [];
     for(let value in data["elementer"]){
@@ -104,29 +116,29 @@ function calculate_population(data){
     return array
 }
 
+/*Funksjon for å hente ut navn, kommunenummer og total befolkning i en kommune, putter disse tre i et objekt og returnerer det*/
 function get_population_details(data){
     let input = regex_check(document.getElementById("input").value);
     if (input !== null){
         let result = data.getInfo(input);
         let total_population = result["Kvinner"]["2018"]+ result["Menn"]["2018"];
         return {name:result.name, id:result.kommunenummer,total_population:total_population};
-
-
     }
     if (input === null){
         throw "Feil: Skriv inn et gyldig kommunenummer"
     }
 }
 
+/*Funksjon for å hente ut data om ansatte i en kommune*/
 function get_employed_details(data) {
     let input = regex_check(document.getElementById("input").value);
     if (input !== null){
         let result = data.getInfo(input);
         return result["Begge kjønn"]["2018"];
     }
-
 }
 
+/*Funksjon for å hente ut all data om høyere utdanning i en kommune, data blir lagt i et objekt og returnert*/
 function calculate_educated(data){
     let man_short = data["03a"]["Menn"]["2017"];
     let man_long = data["04a"]["Menn"]["2017"];
@@ -144,6 +156,7 @@ function calculate_educated(data){
     return result
 }
 
+/*Funksjon for å hente ut utdanningsdetaljer/objektet til en kommune, baset på brukerinput(kommunenummer)*/
 function get_education_details(data){
     let input = regex_check(document.getElementById("input").value);
     if (input !== null){
@@ -152,6 +165,7 @@ function get_education_details(data){
     }
 }
 
+/*Samlefunksjon for å hente inn og vise all data som er del av "detaljer"-delen av oppgaven*/
 function details(pop,emp,edu){
     let pop_data = get_population_details(pop);
     let emp_data = get_employed_details(emp);
@@ -161,13 +175,15 @@ function details(pop,emp,edu){
     let edu_data_result = "[%utdannet: " + edu_data.total+"] [utdannet: "+calculate(pop_data.total_population,edu_data.total)+"]";
     let result =  pop_data_result + emp_data_result + edu_data_result;
     document.getElementById("details_data").appendChild(document.createTextNode(result));
-    historic_development(pop,emp,edu)
+    historic_development(pop,emp,edu) //Henter historisk data.
 }
 
+/*Funksjon som regner ut antall av prosent. Ment for å finne antall ansatte/utdannede*/
 function calculate(number, percentage) {
-return parseInt((number/100)*percentage)
+    return parseInt((number/100)*percentage)
 }
 
+/*Funksjon for å endre knapper, disable/enable basert på parameterverdien: bool*/
 function alterBtn(bool) {
     let btn = document.getElementsByTagName("button");
     for (let i = 0; i < btn.length ; i++) {
@@ -175,10 +191,12 @@ function alterBtn(bool) {
     }
 }
 
+/*Funksjon for å vise "laste-skjerm", denne vises til siste datasett er lastet inn*/
 function loadingScreen() {
     document.getElementById("loading").style.display = "none";
 }
 
+/*Samlefunksjon for å vise all historisk data*/
 function historic_development(pop,emp,edu) {
     let input = regex_check(document.getElementById("input").value);
     let pop_data = pop.getInfo(input);
@@ -210,6 +228,7 @@ function historic_development(pop,emp,edu) {
     trim(edu_data,"Kvinner", "edu_11_women", "11");
 }
 
+/*Funksjon som klargjør data for å bli vist på HTML siden*/
 function trim(data, gender, id, edu, extra_text) {
     if (edu === undefined){
         let trimmed = clean(JSON.stringify(data[gender])).split(",");
@@ -220,11 +239,13 @@ function trim(data, gender, id, edu, extra_text) {
     }
 }
 
+/*Funksjon som renser et datasett. Ment for bruk sammen med trim()*/
 function clean(text) {
-    let cleaned = text.replace(/[^a-zA-Z0-9.,:\s*]/g, "")
-    return cleaned.replace(/[:]/g,": ")
+    let cleaned = text.replace(/[^a-zA-Z0-9.,:\s*]/g, "");
+    return cleaned.replace(/[:]/g,": ");
 }
 
+/*Funksjon som legger elementer/text til html-siden. En må spesifisere hvor en vil ha det (id) hva som skal vises (data) og (extra_text)*/
 function placeHTML(id, data, extra_text) {
     let placement = document.getElementById(id);
     for (let i = 0; i < data.length; i++) {
@@ -243,14 +264,14 @@ function placeHTML(id, data, extra_text) {
 
     }
 }
-function placeTitle(id,data, type) {
 
+/*Funksjon som lar deg lage et enkelt element og plassere på html-siden. Id bestemmer hvor, data er hva du vil vise, type er hvilket element en skal lage*/
+function placeTitle(id,data, type) {
     if (type === undefined){
         let placement = document.getElementById(id);
         let text = document.createTextNode(data);
         placement.appendChild(text)
     }
-
     if (type !== undefined){
         let placement = document.getElementById(id);
         let element = document.createElement(type);
@@ -260,13 +281,12 @@ function placeTitle(id,data, type) {
     }
 }
 
-function compare(pop,emp,edu) {
+/*Samlefunksjon som klargjør all info som skal med i sammenligningen av to kommuner*/
+function compare(pop,emp) {
     let mun_1 = regex_check(document.getElementById("comp_1").value);
     let mun_2 = regex_check(document.getElementById("comp_2").value);
     let emp_mun_1 = emp.getInfo(mun_1);
     let emp_mun_2 = emp.getInfo(mun_2);
-
-    console.log(emp_mun_1)
 
     let mun_1_growth = com_data(emp_mun_1,"Menn");
     let mun_2_growth = com_data(emp_mun_2, "Menn");
@@ -289,8 +309,6 @@ function compare(pop,emp,edu) {
     let resulatat_women = compare_growth(mun_3_growth,mun_4_growth);
     let resultat_total_women = sum_list(mun_3_growth, mun_4_growth);
 
-    console.log(resultat_total_women)
-
     placeTitle("mun_1_women", emp_mun_1.name+" Kvinner");
     placeTitle("mun_2_women", emp_mun_2.name+" Kvinner");
 
@@ -299,27 +317,25 @@ function compare(pop,emp,edu) {
 
     placeTitle("mun_3_liste", resultat_total_women[0][0]+" "+resultat_total_women[0][1].toFixed(1), "LI");
     placeTitle("mun_4_liste", resultat_total_women[1][0]+" "+resultat_total_women[1][1].toFixed(1), "LI");
-
 }
 
+/*Funksjon som regner ut vekst i prosentpoeng, returnerer en liste over vekst for hvert år (bortsett fra det første som er utgangspunktet)*/
 function com_data(data,gender) {
     let d1 = [];
     for (let x in data[gender]){
-        // noinspection EqualityComparisonWithCoercionJS
         if (x == 2005){
             d1.push("0")
         }
-
         if (x > 2005){
             let temp = data[gender][x] - data[gender][x-1];
             d1.push(temp);
         }
-
     }
     return d1
     
 }
 
+/*Funksjon som summerer vekst i prosentpoeng fra to datasett, returnerer "vinner" og "taper" og tallet på den totale veksen*/
 function sum_list(data,data2) {
     let x = 0;
     let y = 0;
@@ -329,32 +345,38 @@ function sum_list(data,data2) {
     }
 
     if ( x > y){
-        let z = ["Total høyest vekst",x];
-        let q = ["Total minst vekst", y];
+        let z = ["Total høyest vekst: ",x];
+        let q = ["Total minst vekst: ",y];
         return[z,q]
     }
 
     if ( x < y){
-        let z = ["Total høyest vekst", y];
-        let q = ["Total minst vekst", x];
+        let z = ["Total høyest vekst: ",y];
+        let q = ["Total minst vekst: ",x];
         return[z,q]
     }
 
 }
 
+/*Funksjon som sammenligner vekst i prosentpoeng år for år mellom to datasett. Returnerer "vinner" og taper" for hver år*/
 function compare_growth(data,data2) {
     let array = [];
     let array2 = [];
     for (let i = 0; i <data.length ; i++) {
         if (data[i] > data2[i]){
-            array.push("Høyest vekst " + data[i].toFixed(1));
-            array2.push("Minst vekst " + data2[i].toFixed(1))
+            array.push("Høyest vekst: " + data[i].toFixed(1));
+            array2.push("Minst vekst: " + data2[i].toFixed(1))
         }
         if (data[i] < data2[i]){
             array2.push("Høyest vekst " + data2[i].toFixed(1));
             array.push("Minst vekst " + data[i].toFixed(1))
         }
-        if (data[i] === data2[i]){
+        if (data[i] === data2[i] && i !== 0){
+            array2.push("Lik vekst: " + data2[i].toFixed(1));
+            array.push("Lik vekst: " + data[i].toFixed(1))
+        }
+
+        if (i === 0){
             array.push("Utgangspunkt");
             array2.push("Utgangspunkt");
         }
@@ -362,6 +384,9 @@ function compare_growth(data,data2) {
     return [array,array2]
 }
 
+/*Funksjon som gjør klar programmet. Her laged det tre objekter av typen Search, de får urlene til sitt passende datasett.
+* Alle knapper på siden blir disabled mens datasettene lastes. Det er også test på skjermen som sier "laster".
+* Datasettene blir lastet inn en etter en og når siste(education) er ferdig så enables knappene igjen og loading-skjerm forsvinner */
 function prep() {
     alterBtn(true);
     let population = new Search(urls()[0], function(){employed.load()});
@@ -378,7 +403,7 @@ function prep() {
     });
 
     document.getElementById("compare_button").addEventListener("click", function () {
-        compare(population,employed,education)
-    })
+        compare(population,employed)
+    });
 }
 
