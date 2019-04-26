@@ -308,6 +308,7 @@ function compare(pop,emp) {
         while (placement.firstChild){
             placement.removeChild(placement.firstChild)
         }
+
     }
     let mun_1 = regex_check(document.getElementById("comp_1").value);
     let mun_2 = regex_check(document.getElementById("comp_2").value);
