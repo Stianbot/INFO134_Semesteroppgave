@@ -122,7 +122,7 @@ function get_population_details(data){
     if (input !== null){
         let result = data.getInfo(input);
         let total_population = result["Kvinner"]["2018"]+ result["Menn"]["2018"];
-        return {name:result.name, id:result.kommunenummer,total_population:total_population};
+        return {name:result.name, id:result.kommunenummer,total_population:total_population, total_men:result["Menn"]["2018"],total_women:result["Kvinner"]["2018"]};
     }
     if (input === null){
         throw "Feil: Skriv inn et gyldig kommunenummer"
@@ -167,12 +167,18 @@ function get_education_details(data){
 
 /*Samlefunksjon for å hente inn og vise all data som er del av "detaljer"-delen av oppgaven*/
 function details(pop,emp,edu){
+    let placement = document.getElementById("details_data");
+    while (placement.firstChild){
+        placement.removeChild(placement.firstChild)
+    }
+
     let pop_data = get_population_details(pop);
     let emp_data = get_employed_details(emp);
     let edu_data = get_education_details(edu);
+    let calculate_edu = calculate(pop_data.total_men,edu_data.man_total) + calculate(pop_data.total_women,edu_data.woman_total)
     let pop_data_result = "[navn: "+pop_data.name+"] [id: "+pop_data.id+"] [populasjon: "+pop_data.total_population+"] ";
     let emp_data_result = "[%ansatt: "+emp_data+"] [ansatt: "+calculate(pop_data.total_population,emp_data)+"] ";
-    let edu_data_result = "[%utdannet: " + edu_data.total+"] [utdannet: "+calculate(pop_data.total_population,edu_data.total)+"]";
+    let edu_data_result = "[%utdannet: " + calculate_2(calculate_edu,pop_data.total_population)+"] [utdannet: "+calculate_edu+"]";
     let result =  pop_data_result + emp_data_result + edu_data_result;
     document.getElementById("details_data").appendChild(document.createTextNode(result));
     historic_development(pop,emp,edu) //Henter historisk data.
@@ -181,6 +187,10 @@ function details(pop,emp,edu){
 /*Funksjon som regner ut antall av prosent. Ment for å finne antall ansatte/utdannede*/
 function calculate(number, percentage) {
     return parseInt((number/100)*percentage)
+}
+
+function calculate_2(number, total){
+    return parseInt((number*100)/ total)
 }
 
 /*Funksjon for å endre knapper, disable/enable basert på parameterverdien: bool*/
@@ -198,6 +208,14 @@ function loadingScreen() {
 
 /*Samlefunksjon for å vise all historisk data*/
 function historic_development(pop,emp,edu) {
+    let id_list = ["pop_man","pop_women","emp_man","emp_women","edu_01_man","edu_01_women","edu_02a_man","edu_02a_women","edu_03a_man","edu_03a_women","edu_04a_man","edu_04a_women","edu_09a_man","edu_09a_women","edu_11_man","edu_11_women"];
+    for (let i=0; i<id_list.length; i++){
+        let placement = document.getElementById(id_list[i]);
+        while (placement.firstChild){
+            placement.removeChild(placement.firstChild)
+        }
+    }
+
     let input = regex_check(document.getElementById("input").value);
     let pop_data = pop.getInfo(input);
     let emp_data = emp.getInfo(input);
@@ -399,7 +417,7 @@ function prep() {
     });
 
     document.getElementById("details_button").addEventListener("click", function () {
-        details(population,employed,education)
+        details(population,employed,education); document.getElementById("historical").style.display="flex";
     });
 
     document.getElementById("compare_button").addEventListener("click", function () {
