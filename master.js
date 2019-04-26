@@ -301,6 +301,14 @@ function placeTitle(id,data, type) {
 
 /*Samlefunksjon som klargjør all info som skal med i sammenligningen av to kommuner*/
 function compare(pop,emp) {
+
+    let id_list = ["mun_1_man","mun_2_man","mun_1_women","mun_2_women","mun_1_liste","mun_2_liste","mun_3_liste","mun_4_liste"];
+    for (let i=0; i<id_list.length; i++){
+        let placement = document.getElementById(id_list[i]);
+        while (placement.firstChild){
+            placement.removeChild(placement.firstChild)
+        }
+    }
     let mun_1 = regex_check(document.getElementById("comp_1").value);
     let mun_2 = regex_check(document.getElementById("comp_2").value);
     let emp_mun_1 = emp.getInfo(mun_1);
